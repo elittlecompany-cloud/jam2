@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id" style="background:#0f3d2e">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Jam el'egance</title>
+<style>
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: #0f3d2e !important;
+    overflow: hidden;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #ffffff;
+  }
+  #stage {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #0f3d2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #unit {
+    display: inline-flex;
+    align-items: center;
+    gap: 28px;
+    white-space: nowrap;
+    transform-origin: center center;
+  }
+  #time {
+    font-size: 100px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: #ffffff;
+  }
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-left: 4px solid rgba(255,255,255,.4);
+    padding-left: 28px;
+  }
+  #date { font-size: 38px; font-weight: 500; line-height: 1.15; color: #ffffff; }
+  #tz   { font-size: 30px; line-height: 1.1; color: rgba(255,255,255,.75); }
+</style>
+</head>
+<body style="background:#0f3d2e">
+  <div id="stage">
+    <div id="unit">
+      <div id="time">00:00:00</div>
+      <div class="side">
+        <div id="date">Memuat...</div>
+        <div id="tz">WIB (UTC+7)</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  var TZ = "Asia/Jakarta"; // WITA: "Asia/Makassar", WIT: "Asia/Jayapura"
+  var timeFmt = new Intl.DateTimeFormat("id-ID", {
+    timeZone: TZ, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+  });
+  var dateFmt = new Intl.DateTimeFormat("id-ID", {
+    timeZone: TZ, weekday: "long", day: "numeric", month: "long", year: "numeric"
+  });
+
+  var unit = document.getElementById("unit");
+  var lastDate = "";
+
+  function fit() {
+    unit.style.transform = "scale(1)";
+    var w = unit.offsetWidth, h = unit.offsetHeight;
+    if (!w || !h) return;
+    var s = Math.min(window.innerWidth / w, window.innerHeight / h) * 0.94;
+    unit.style.transform = "scale(" + s + ")";
+  }
+
+  function tick() {
+    var now = new Date();
+    document.getElementById("time").textContent = timeFmt.format(now).replace(/\./g, ":");
+    var d = dateFmt.format(now);
+    if (d !== lastDate) {
+      lastDate = d;
+      document.getElementById("date").textContent = d;
+      fit();
+    }
+  }
+
+  tick();
+  fit();
+  setInterval(tick, 1000);
+  window.addEventListener("resize", fit);
+  window.addEventListener("load", fit);
+</script>
+</body>
+</html>
